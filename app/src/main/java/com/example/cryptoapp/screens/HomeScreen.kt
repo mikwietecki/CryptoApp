@@ -50,6 +50,8 @@ fun HomeScreen(
     }
     val data by viewModel.response.collectAsState()
 
+    val favoriteViewModel:FavoriteViewModel = viewModel()
+
     Column(modifier = Modifier
         .padding(horizontal = 14.dp)
         .verticalScroll(rememberScrollState())
@@ -72,7 +74,7 @@ fun HomeScreen(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }
                         .reversed()) {
-                        Crypto(crypto = it, horizontal = true)
+                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
                     }
                 }
                 Text(
@@ -84,7 +86,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }) {
-                        Crypto(crypto = it, horizontal = true)
+                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
                     }
                 }
                 Text(
@@ -96,7 +98,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().volume24h }) {
-                        Crypto(crypto = it, horizontal = true)
+                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -112,7 +114,7 @@ fun HomeScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)){
                     repeat(result.data.data.cryptoCurrencyList.count()){
                         val crypto = result.data.data.cryptoCurrencyList[it]
-                        Crypto(crypto = crypto)
+                        Crypto(crypto = crypto, horizontal = true, favoriteViewModel = FavoriteViewModel())
                     }
                 }
             }
@@ -133,10 +135,9 @@ fun Crypto(
     crypto: Crypto,
     horizontal: Boolean = false,
     onDoubleClick: () -> Unit = {},
-    onFavoriteClick: () -> Unit = {}
+    onFavoriteClick: () -> Unit = {},
+    favoriteViewModel: FavoriteViewModel
 ) {
-    val favoriteViewModel: FavoriteViewModel = viewModel()
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,14 +185,13 @@ fun Crypto(
 
         Column(horizontalAlignment = Alignment.End) {
             // Double-click listener for adding/removing from favorites
-            val isFavorite = favoriteViewModel.favorites.contains(crypto)
             Text(
                 text = "${((crypto.quotes.first().price * 100).roundToInt()) / 100.0}$",
                 modifier = Modifier
                     .clickable(onClick = {
-                        // Create a copy of crypto with the isFavorite property modified
+                        val isFavorite = favoriteViewModel.favorites.contains(crypto)
                         val modifiedCrypto = crypto.copy(isFavorite = !isFavorite)
-                        // Update the view model with the modified crypto
+
                         if (isFavorite) {
                             favoriteViewModel.removeFromFavorites(modifiedCrypto)
                         } else {

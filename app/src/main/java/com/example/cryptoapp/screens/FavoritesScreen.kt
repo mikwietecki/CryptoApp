@@ -24,8 +24,9 @@ fun FavoritesScreen(favoriteViewModel: FavoriteViewModel = viewModel()) {
         )
         LazyColumn {
             items(favoriteViewModel.favorites) { crypto ->
-                Crypto(crypto = crypto)
+                Crypto(crypto = crypto, favoriteViewModel = favoriteViewModel)
             }
         }
     }
+
 }
