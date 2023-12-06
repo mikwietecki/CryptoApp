@@ -37,4 +37,15 @@ class HomeViewModel:ViewModel(),KoinComponent {
     fun removeFromFavorites(crypto: Crypto) {
         favoriteViewModel.removeFromFavorites(crypto)
     }
+
+    fun toggleFavorite(crypto: Crypto) {
+        val isFavorite = favoriteViewModel.favorites.contains(crypto)
+        val modifiedCrypto = crypto.copy(isFavorite = !isFavorite)
+
+        if (isFavorite) {
+            favoriteViewModel.removeFromFavorites(modifiedCrypto)
+        } else {
+            favoriteViewModel.addToFavorites(modifiedCrypto)
+        }
+    }
 }

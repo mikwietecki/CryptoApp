@@ -43,14 +43,13 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
+    favoriteViewModel: FavoriteViewModel = viewModel()
 ) {
     LaunchedEffect(Unit) {
         viewModel.getListing()
     }
     val data by viewModel.response.collectAsState()
-
-    val favoriteViewModel: FavoriteViewModel = viewModel()
 
     Column(modifier = Modifier
         .padding(horizontal = 14.dp)
