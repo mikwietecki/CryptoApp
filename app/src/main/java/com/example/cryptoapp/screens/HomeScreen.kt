@@ -20,11 +20,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,12 +53,26 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.getListing()
     }
+
     val data by viewModel.response.collectAsState()
+
 
     Column(modifier = Modifier
         .padding(horizontal = 14.dp)
         .verticalScroll(rememberScrollState())
     ) {
+        var searchQuery by remember { mutableStateOf("") }
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = {
+                searchQuery = it
+                viewModel.setSearchQuery(it)
+            },
+            label = { Text("Search Crypto") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         when (val result = data) {
             is BaseModel.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -63,6 +81,21 @@ fun HomeScreen(
             }
 
             is BaseModel.Success -> {
+                val searchedCryptoList = viewModel.filterCryptoList(result.data.data.cryptoCurrencyList)
+                if (searchQuery.isNotBlank() && searchedCryptoList.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(top = 18.dp),
+                        text = "Searched Cryptocurrencies",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(searchedCryptoList) {
+                            Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+                        }
+                    }
+                }
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
                     text = "24H Currencies",
@@ -71,8 +104,11 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }
-                        .reversed()) {
+//                    items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }
+//                        .reversed()) {
+//                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+//                    }
+                    items(viewModel.filterCryptoList(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h })) {
                         Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
                     }
                 }
@@ -181,6 +217,8 @@ fun Crypto(
         if (horizontal) {
             Spacer(modifier = Modifier.width(10.dp))
         }
+
+        Modifier.clickable { onDoubleClick() }
 
         Column(horizontalAlignment = Alignment.End) {
             // Double-click listener for adding/removing from favorites
