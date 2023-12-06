@@ -104,13 +104,13 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-//                    items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }
-//                        .reversed()) {
-//                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
-//                    }
-                    items(viewModel.filterCryptoList(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h })) {
+                    items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }
+                        .reversed()) {
                         Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
                     }
+//                    items(viewModel.filterCryptoList(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h })) {
+//                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+//                    }
                 }
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
