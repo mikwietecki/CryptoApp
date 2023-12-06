@@ -50,7 +50,7 @@ fun HomeScreen(
     }
     val data by viewModel.response.collectAsState()
 
-    val favoriteViewModel:FavoriteViewModel = viewModel()
+    val favoriteViewModel: FavoriteViewModel = viewModel()
 
     Column(modifier = Modifier
         .padding(horizontal = 14.dp)
@@ -114,7 +114,7 @@ fun HomeScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)){
                     repeat(result.data.data.cryptoCurrencyList.count()){
                         val crypto = result.data.data.cryptoCurrencyList[it]
-                        Crypto(crypto = crypto, horizontal = true, favoriteViewModel = FavoriteViewModel())
+                        Crypto(crypto = crypto, horizontal = true, favoriteViewModel = favoriteViewModel)
                     }
                 }
             }
