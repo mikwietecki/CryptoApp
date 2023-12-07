@@ -16,10 +16,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale
 
-class HomeViewModel:ViewModel(),KoinComponent {
-    private val repo:CryptoRepo by inject()
+class HomeViewModel : ViewModel(), KoinComponent {
+    private val repo: CryptoRepo by inject()
 
-    private val _response:MutableStateFlow<BaseModel<ApiBaseModel<CryptoCurrencyList>>?> = MutableStateFlow(null)
+    private val _response: MutableStateFlow<BaseModel<ApiBaseModel<CryptoCurrencyList>>?> =
+        MutableStateFlow(null)
     val response = _response.asStateFlow()
 
     private val _searchQuery = MutableStateFlow("")

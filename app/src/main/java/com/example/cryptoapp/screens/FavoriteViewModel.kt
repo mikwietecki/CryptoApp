@@ -12,11 +12,11 @@ class FavoriteViewModel : ViewModel() {
 
     fun addToFavorites(crypto: Crypto) {
         _favorites.add(crypto)
-        Log.d("FavoriteViewModel", "Added to favorites: $crypto")
+        println("Added to favorites: $crypto")
     }
 
     fun removeFromFavorites(crypto: Crypto) {
         _favorites.remove(crypto)
-        Log.d("FavoriteViewModel", "Removed from favorites: $crypto")
+        println("Removed from favorites: $crypto")
     }
 }

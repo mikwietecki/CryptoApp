@@ -26,7 +26,7 @@ import com.example.cryptoapp.ui.theme.BottomNavGraph
 fun MainScreen() {
     val navController = rememberNavController()
     Scaffold(
-        bottomBar = { BottomBar(navController = navController)}
+        bottomBar = { BottomBar(navController = navController) }
     ) {
         BottomNavGraph(navController = navController)
     }
@@ -44,7 +44,11 @@ fun BottomBar(navController: NavHostController) {
 
     BottomNavigation {
         screens.forEach { screen ->
-            AddItem(screen = screen, currentDestination = currentDestination, navController = navController)
+            AddItem(
+                screen = screen,
+                currentDestination = currentDestination,
+                navController = navController
+            )
         }
     }
 }

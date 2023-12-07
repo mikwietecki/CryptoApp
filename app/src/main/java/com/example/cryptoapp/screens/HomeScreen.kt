@@ -50,17 +50,24 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
     favoriteViewModel: FavoriteViewModel = viewModel()
 ) {
+
+    // Uruchamia asynchroniczny efekt pobierania danych kryptowalutowych przy uruchomieniu ekranu
     LaunchedEffect(Unit) {
         viewModel.getListing()
     }
 
+    // Pobiera stan z view modelu
     val data by viewModel.response.collectAsState()
 
 
-    Column(modifier = Modifier
-        .padding(horizontal = 14.dp)
-        .verticalScroll(rememberScrollState())
+    // Główna struktura UI korzystająca z Jetpack Compose
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 14.dp)
+            .verticalScroll(rememberScrollState())
     ) {
+        // Pasek wyszukiwania za pomocą OutlinedTextField
+        // Aktualizuje zapytanie wyszukiwania w view modelu po wprowadzeniu danych przez użytkownika
         var searchQuery by remember { mutableStateOf("") }
         OutlinedTextField(
             value = searchQuery,
@@ -73,15 +80,19 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+        // Obsługuje różne stany odpowiedzi danych
         when (val result = data) {
+            // Stan ładowania: Wyświetla wskaźnik ładowania
             is BaseModel.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = Color.White)
                 }
             }
 
+            // Stan powodzenia: Wyświetla listy kryptowalut w zależności od różnych kryteriów
             is BaseModel.Success -> {
-                val searchedCryptoList = viewModel.filterCryptoList(result.data.data.cryptoCurrencyList)
+                val searchedCryptoList =
+                    viewModel.filterCryptoList(result.data.data.cryptoCurrencyList)
                 if (searchQuery.isNotBlank() && searchedCryptoList.isNotEmpty()) {
                     Text(
                         modifier = Modifier.padding(top = 18.dp),
@@ -92,7 +103,11 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(searchedCryptoList) {
-                            Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+                            Crypto(
+                                crypto = it,
+                                horizontal = true,
+                                favoriteViewModel = favoriteViewModel
+                            )
                         }
                     }
                 }
@@ -106,11 +121,12 @@ fun HomeScreen(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }
                         .reversed()) {
-                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+                        Crypto(
+                            crypto = it,
+                            horizontal = true,
+                            favoriteViewModel = favoriteViewModel
+                        )
                     }
-//                    items(viewModel.filterCryptoList(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h })) {
-//                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
-//                    }
                 }
                 Text(
                     modifier = Modifier.padding(top = 18.dp),
@@ -121,7 +137,11 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().percentChange24h }) {
-                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+                        Crypto(
+                            crypto = it,
+                            horizontal = true,
+                            favoriteViewModel = favoriteViewModel
+                        )
                     }
                 }
                 Text(
@@ -133,7 +153,11 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(result.data.data.cryptoCurrencyList.sortedBy { it.quotes.first().volume24h }) {
-                        Crypto(crypto = it, horizontal = true, favoriteViewModel = favoriteViewModel)
+                        Crypto(
+                            crypto = it,
+                            horizontal = true,
+                            favoriteViewModel = favoriteViewModel
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -145,11 +169,15 @@ fun HomeScreen(
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier=Modifier.height(8.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)){
-                    repeat(result.data.data.cryptoCurrencyList.count()){
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    repeat(result.data.data.cryptoCurrencyList.count()) {
                         val crypto = result.data.data.cryptoCurrencyList[it]
-                        Crypto(crypto = crypto, horizontal = true, favoriteViewModel = favoriteViewModel)
+                        Crypto(
+                            crypto = crypto,
+                            horizontal = true,
+                            favoriteViewModel = favoriteViewModel
+                        )
                     }
                 }
             }
@@ -173,6 +201,7 @@ fun Crypto(
     onFavoriteClick: () -> Unit = {},
     favoriteViewModel: FavoriteViewModel
 ) {
+    // Układ wiersza wyświetlający informacje o kryptowalucie
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -221,7 +250,6 @@ fun Crypto(
         Modifier.clickable { onDoubleClick() }
 
         Column(horizontalAlignment = Alignment.End) {
-            // Double-click listener for adding/removing from favorites
             Text(
                 text = "${((crypto.quotes.first().price * 100).roundToInt()) / 100.0}$",
                 modifier = Modifier

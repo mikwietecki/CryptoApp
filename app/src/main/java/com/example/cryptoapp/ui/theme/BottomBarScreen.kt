@@ -7,25 +7,25 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class BottomBarScreen (
+sealed class BottomBarScreen(
     val route: String,
     val title: String,
-    val icon:ImageVector
+    val icon: ImageVector
 ) {
-    object Home: BottomBarScreen(
+    object Home : BottomBarScreen(
         route = "home",
         title = "Home",
-            icon = Icons.Default.Home,
+        icon = Icons.Default.Home,
 
-    )
+        )
 
-    object Favorites: BottomBarScreen(
+    object Favorites : BottomBarScreen(
         route = "favorites",
         title = "Favorites",
         icon = Icons.Default.Favorite
     )
 
-    object Settings: BottomBarScreen(
+    object Settings : BottomBarScreen(
         route = "settings",
         title = "Settings",
         icon = Icons.Default.Settings
